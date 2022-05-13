@@ -67,7 +67,7 @@ public class MQTTPublisher implements MqttCallback {
      * sendMqttMessage The main functionality of this simple example. Create a MQTT
      * client, connect to broker, pub/sub, disconnect.
      */
-    public void sendMqttMessage(String jsonData) {
+    public void sendMqttMessage(double temp) {
         // setup MQTT Client
         String clientID = M2MIO_THING;
         connOpt = new MqttConnectOptions();
@@ -92,14 +92,15 @@ public class MQTTPublisher implements MqttCallback {
         String myTopic = TOPIC;
         MqttTopic topic = myClient.getTopic(myTopic);
 
-//        publish messages if publisher
+        String val = String.format("T:%04.2f", temp);
+        String pubMsg = "{\"value\":" + val + "}";
 
         int pubQoS = 0;
-        MqttMessage message = new MqttMessage(jsonData.getBytes());
+        MqttMessage message = new MqttMessage(pubMsg.getBytes());
         message.setQos(pubQoS);
         message.setRetained(false);
         // Publish the message
-        log.info("Publishing to topic \"" + topic + "\" qos " + pubQoS + "\" value " + jsonData);
+        log.info("Publishing to topic \"" + topic + "\" qos " + pubMsg + "\" value " + val);
         MqttDeliveryToken token = null;
         try {
             // publish message to broker
